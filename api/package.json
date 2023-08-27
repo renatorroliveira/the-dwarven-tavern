@@ -1,10 +1,10 @@
 {
-    "name": "tdt-api",
-    "version": "0.0.1",
+    "name": "@tdt/api",
+    "version": "0.1.0",
     "description": "",
     "author": "Renato Oliveira (renatorroliveira@)",
     "private": true,
-    "license": "UNLICENSED",
+    "license": "GPL-3.0",
     "scripts": {
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
