@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import configurationProvider from '@src/configuration';
@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AuthModule } from './auth/auth.module';
+import { RequestLoggerMiddleware } from './middlewares/RequestLoggerMiddleware';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -17,7 +18,6 @@ import { UserModule } from './user/user.module';
             load: [configurationProvider],
         }),
         MongooseModule.forRootAsync({
-            imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => {
                 const logger = new Logger(`${MongooseModule.name}AsyncConfiguration`);
                 const config: MongooseModuleFactoryOptions = {
@@ -44,4 +44,8 @@ import { UserModule } from './user/user.module';
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(RequestLoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
+    }
+}
