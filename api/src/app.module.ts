@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from '@src/app.controller';
-import { AppService } from '@src/app.service';
+import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import configurationProvider from '@src/configuration';
-import { UserModule } from '@src/user/User.module';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
@@ -15,12 +18,28 @@ import { UserModule } from '@src/user/User.module';
         }),
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('database.host'),
-            }),
+            useFactory: async (configService: ConfigService) => {
+                const logger = new Logger(`${MongooseModule.name}AsyncConfiguration`);
+                const config: MongooseModuleFactoryOptions = {
+                    uri: `mongodb://${configService.get<string>('database.username')}:${configService.get<string>(
+                        'database.password',
+                    )}@${configService.get<string>('database.host')}?directConnection=true&appName=tdt-api`,
+                    dbName: 'tdt',
+                    retryAttempts: 2,
+                    autoCreate: true,
+                    autoIndex: true,
+                    maxPoolSize: 100,
+                    minPoolSize: 5,
+                    maxIdleTimeMS: 300000,
+                };
+                logger.log('Instantiating database connection with configuration:', config);
+
+                return config;
+            },
             inject: [ConfigService],
         }),
         UserModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],

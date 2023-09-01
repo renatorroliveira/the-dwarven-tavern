@@ -5,10 +5,10 @@ ENV NODE_ENV=production
 COPY . /usr/local/app
 WORKDIR /usr/local/app
 
-RUN npm i -g npm@9.8.1 @nestjs/cli@10.1.0
+RUN npm i -g npm@9.8.1 serve
 RUN npm i --frozen-lockfile
 RUN npm run build
 
-EXPOSE 5000
+EXPOSE 8080
 
-CMD ["npm", "run", "start:prod"]
+CMD ["serve", "-p", "8080", "-L", "-u", "-s", "build/"]

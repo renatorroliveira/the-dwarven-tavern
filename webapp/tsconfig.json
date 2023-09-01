@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "target": "esnext",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
@@ -14,7 +15,12 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "resolveJsonModule": true,
+        "paths": {
+            "@src/*": ["src/*"],
+            "@test/*": ["test/*"]
+        }
     },
     "include": ["src", "test"]
 }

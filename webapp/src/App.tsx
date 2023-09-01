@@ -1,14 +1,22 @@
-import { ApplicationRoutes } from './navigation/ApplicationRoutes';
-import Box from '@cloudscape-design/components/box';
-import TopNav from './navigation/TopNav';
+import { useEffect } from 'react';
+
+import { ApplicationRoutes } from '@src/navigation/ApplicationRoutes';
+import { useAppStatus } from '@src/service/operations';
 
 function App() {
-    return (
-        <Box variant="div">
-            <TopNav />
-            <ApplicationRoutes />
-        </Box>
-    );
+    const appStatus = useAppStatus();
+
+    useEffect(() => {
+        if (!appStatus.isLoading) {
+            if (appStatus.error) {
+                console.error('API health check failed:', appStatus.error);
+            } else {
+                console.log(`API health check:`, appStatus.data);
+            }
+        }
+    }, [appStatus.data]);
+
+    return <ApplicationRoutes />;
 }
 
 export default App;

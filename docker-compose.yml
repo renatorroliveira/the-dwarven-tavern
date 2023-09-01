@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+    mongo:
+        image: tdt-db:latest
+        restart: always
+        container_name: mongo
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongoadmin
+            MONGO_INITDB_ROOT_PASSWORD: somepassword
+        volumes:
+            - type: bind
+              source: ./data
+              target: /data/db
