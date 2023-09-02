@@ -4,7 +4,7 @@ export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             notifyOnChangeProps: 'all',
-            suspense: true,
+            suspense: false,
         },
     },
 });

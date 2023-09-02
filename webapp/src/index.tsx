@@ -1,6 +1,5 @@
 import '@cloudscape-design/global-styles/index.css';
 
-import { applyDensity, applyMode, Density, Mode } from '@cloudscape-design/global-styles';
 import { QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
@@ -13,7 +12,19 @@ import { queryClient } from './service/QueryClient';
 import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 import ContentLayout from '@cloudscape-design/components/content-layout';
+import { applyTheme, Theme } from '@cloudscape-design/components/theming';
+import { applyDensity, applyMode, Density, Mode } from '@cloudscape-design/global-styles';
 
+const theme: Theme = {
+    tokens: {
+        fontFamilyBase: "Roboto,'Helvetica Neue', Arial, sans-serif",
+        colorBackgroundLayoutMain: {
+            dark: '#101217',
+            light: '#d9dbe0',
+        },
+    },
+};
+applyTheme({ theme });
 applyDensity(Density.Comfortable);
 applyMode(Mode.Dark);
 

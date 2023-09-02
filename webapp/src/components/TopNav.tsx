@@ -5,16 +5,29 @@ import TopNavigation, { TopNavigationProps } from '@cloudscape-design/components
 import { APP_ROUTES_FOR_PAGES } from '@src/routes/constants';
 
 import { BaseNavigationDetail, CancelableEventHandler } from '@cloudscape-design/components/internal/events';
+import { LOGIN_STATUS_CACHE_KEY } from '@src/service/auth/constants';
 import { useLonginStatus } from '@src/service/operations';
 import { useCallback } from 'react';
+import { ButtonDropdownProps } from '@cloudscape-design/components/button-dropdown/interfaces';
 
 // TODO Implement proper dynamic top nav.
 function TopNav() {
     const navigate = useNavigate();
     const loginStatus = useLonginStatus();
-    const isLoggedIn = !!loginStatus.data;
+    const { data } = loginStatus;
 
     const onFollow = useCallback(getOnFollow(navigate), [navigate]);
+
+    const OnUserMenuItemClick: CancelableEventHandler<ButtonDropdownProps.ItemClickDetails> = useCallback(
+        (event) => {
+            if (event.detail.id === 'signout') {
+                localStorage.removeItem(LOGIN_STATUS_CACHE_KEY);
+                loginStatus.refetch();
+                navigate(APP_ROUTES_FOR_PAGES.HOME);
+            }
+        },
+        [navigate, loginStatus.refetch],
+    );
 
     return (
         <TopNavigation
@@ -23,7 +36,7 @@ function TopNav() {
                 title: 'The Dwarven Tavern',
             }}
             utilities={[
-                ...((isLoggedIn
+                ...((data
                     ? [
                           {
                               type: 'button',
@@ -58,36 +71,15 @@ function TopNav() {
                           },
                           {
                               type: 'menu-dropdown',
-                              text: 'Customer Name',
-                              description: 'email@example.com',
+                              text: data.displayName,
+                              description: data.email,
                               iconName: 'user-profile',
                               items: [
                                   { id: 'profile', text: 'Profile' },
                                   { id: 'preferences', text: 'Preferences' },
-                                  { id: 'security', text: 'Security' },
-                                  {
-                                      id: 'support-group',
-                                      text: 'Support',
-                                      items: [
-                                          {
-                                              id: 'documentation',
-                                              text: 'Documentation',
-                                              href: '#',
-                                              external: true,
-                                              externalIconAriaLabel: ' (opens in new tab)',
-                                          },
-                                          { id: 'support', text: 'Support' },
-                                          {
-                                              id: 'feedback',
-                                              text: 'Feedback',
-                                              href: '#',
-                                              external: true,
-                                              externalIconAriaLabel: ' (opens in new tab)',
-                                          },
-                                      ],
-                                  },
                                   { id: 'signout', text: 'Sign out' },
                               ],
+                              onItemClick: OnUserMenuItemClick,
                           },
                       ]
                     : [

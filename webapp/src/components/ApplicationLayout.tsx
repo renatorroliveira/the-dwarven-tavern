@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import AppLayout, { AppLayoutProps } from '@cloudscape-design/components/app-layout';
 
-import TopNav from '@src/navigation/TopNav';
+import TopNav from '@src/components/TopNav';
 import { APP_ROUTES_CONTENT_TYPE, APP_ROUTES_MAX_WIDTH } from '@src/routes/constants';
 
 export function ApplicationLayout() {
@@ -17,6 +17,9 @@ export function ApplicationLayout() {
                 content={<Outlet />}
                 contentType={contentType}
                 maxContentWidth={APP_ROUTES_MAX_WIDTH[pathname]}
+                navigationOpen={false}
+                splitPanelOpen={false}
+                toolsOpen={false}
             />
         </>
     );
